@@ -37,7 +37,6 @@ services:
     - postgres_shared_network  
 
 volumes:
-  environemnt_volume:
   static_volume:
   frontend_volume:
 
