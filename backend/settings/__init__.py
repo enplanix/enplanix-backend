@@ -1,7 +1,9 @@
 import os
 import dotenv
 
-dotenv.load_dotenv('./.env.dev')
+ENV_FILE=os.getenv('ENV_FILE', '.env.dev')
+
+dotenv.load_dotenv(f'./{ENV_FILE}')
 settings_mode = os.getenv('PROJECT_SETTINGS', 'local')
 
 if settings_mode == 'local':

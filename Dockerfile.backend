@@ -1,11 +1,20 @@
-FROM python:3.13-alpine3.21
+FROM python:3.13-alpine AS base
+
+ENV PYTHONUNBUFFERED=1
+ENV ENV_FILE=.env.prod
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+COPY . /app/
+
+RUN python manage.py collectstatic --noinput
+RUN chmod +x "./gunicorn.sh"
+
 
 EXPOSE 8000
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Start Gunicorn server
+CMD ["./gunicorn.sh"]

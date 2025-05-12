@@ -1,5 +1,6 @@
 from django.shortcuts import render
+from django.http import Http404
 
 
 def react_app(request):
-    return render(request, 'index.html')
+    raise Http404()
