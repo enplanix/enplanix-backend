@@ -1,9 +1,8 @@
 import os
 import dotenv
 
-ENV_FILE=os.getenv('ENV_FILE', '.env.dev')
 
-dotenv.load_dotenv(f'./{ENV_FILE}')
+dotenv.load_dotenv(f'./.env')
 settings_mode = os.getenv('PROJECT_SETTINGS', 'local')
 
 if settings_mode == 'local':
@@ -12,3 +11,6 @@ elif settings_mode == 'prod':
     from .prod import *
 else:
     raise ValueError("Unknown settings module.")
+
+
+print(ALLOWED_HOSTS)
