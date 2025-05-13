@@ -9,10 +9,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/
 
-RUN if [ -f .env.prod ]; then cat .env.prod > .env; fi
-
-RUN python manage.py collectstatic --noinput
-RUN chmod +x "./gunicorn.sh"
+RUN if [ -f .env.prod ]; then cat .env.prod > .env; fi && \
+    python manage.py collectstatic --noinput && \
+    chmod +x "./gunicorn.sh"
 
 
 EXPOSE 8000
