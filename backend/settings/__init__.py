@@ -11,6 +11,3 @@ elif settings_mode == 'prod':
     from .prod import *
 else:
     raise ValueError("Unknown settings module.")
-
-
-print(ALLOWED_HOSTS)

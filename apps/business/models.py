@@ -7,13 +7,16 @@ class SegmentCategory(UUIDModel):
     name = models.CharField(max_length=32)
 
     class Meta:
-        ordering = ['code']
+        ordering = ['name']
 
 
 class Segment(UUIDModel):
     code = models.CharField(max_length=24)
     category = models.ForeignKey(SegmentCategory, on_delete=models.CASCADE, related_name='segments')
     name = models.CharField(max_length=32)
+
+    class Meta:
+        ordering = ['name']
 
 
 class Business(UUIDChronoModel):
