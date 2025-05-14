@@ -10,7 +10,7 @@ class Client(UUIDChronoModel, AddressedModel):
     phone = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     color = models.CharField(max_length=7, blank=True, default='#FFFFFF')
-    
+
 
 class OfferType(models.TextChoices):
     PRODUCT = "PRODUCT", "Produto"
@@ -31,6 +31,7 @@ class Subcategory(UUIDModel):
 
     def __str__(self):
         return self.name
+
 
 class Offer(UUIDChronoModel):
     business = models.ForeignKey("business.Business", on_delete=models.CASCADE)
@@ -53,6 +54,7 @@ class Service(Offer):
     def save(self, *args, **kwargs):
         self.type = 'service'
         super().save(*args, **kwargs)
+
 
 class Product(Offer):
     images = models.ManyToManyField(ImageUpload, blank=True)
