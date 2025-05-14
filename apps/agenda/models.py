@@ -1,5 +1,6 @@
 from django.db import models
 from core.models import UUIDChronoModel, UUIDModel
+from django.core.exceptions import ValidationError
 
 
 class Agenda(UUIDChronoModel):
@@ -11,6 +12,14 @@ class Agenda(UUIDChronoModel):
     end = models.TimeField()
     
     observations = models.TextField(blank=True)
+
+    def clean(self):
+        if self.start > self.end:
+            raise ValidationError("Início não pode ser maior que o fim.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
 
 
 class AgendaExtra(UUIDModel):
