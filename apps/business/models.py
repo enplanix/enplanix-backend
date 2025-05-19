@@ -1,6 +1,9 @@
 from django.db import models
 from core.models import UUIDChronoModel, UUIDModel
-
+from datetime import time
+from datetime import datetime
+from django.utils import timezone
+from rest_framework.exceptions import ValidationError
 
 class SegmentCategory(UUIDModel):
     code = models.CharField(max_length=24)
@@ -48,6 +51,9 @@ class Business(UUIDChronoModel):
 
 class BusinessConfig(UUIDModel):
     business = models.OneToOneField(Business, on_delete=models.CASCADE, related_name='config')
+    agenda_start_time = models.TimeField(default=time(7, 0))
+    agenda_end_time = models.TimeField(default=time(18, 0))
+    agenda_allow_conflicting_time = models.BooleanField(default=False)
 
     def __str__(self):
         return self.business.name

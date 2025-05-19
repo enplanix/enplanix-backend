@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.business.models import Business, BusinessMember, Segment, SegmentCategory
-from apps.business.serializers import BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentCategorySerializer
+from apps.business.models import Business, BusinessConfig, BusinessMember, Segment, SegmentCategory
+from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentCategorySerializer
 from rest_framework import filters
 import time
 
@@ -51,3 +51,21 @@ class BusinessMemberViewSet(ModelViewSet):
         if business:
             return BusinessMember.objects.filter(business=business)
         return BusinessMember.objects.none()
+
+
+class BusinessConfigViewSet(ModelViewSet):
+    serializer_class = BusinessConfigSerializer
+    model = BusinessConfig
+    
+    def get_queryset(self):
+        business = self.request.user.preference.current_business
+        print(business)
+        if business:
+            return BusinessConfig.objects.filter(business=business)
+        return BusinessConfig.objects.none()
+
+    @action(methods=['get'], detail=False)
+    def get_current(self, request):
+        instance = self.filter_queryset(self.get_queryset()).first()
+        serializer = BusinessConfigSerializer(instance)
+        return Response(serializer.data)

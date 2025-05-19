@@ -1,18 +1,36 @@
 from rest_framework import serializers
 
 from apps.access.serializers import UserSerializer
-from apps.business.models import Business, BusinessMember, Segment, SegmentCategory
+from apps.business.models import Business, BusinessConfig, BusinessMember, Segment, SegmentCategory
 from apps.upload.serializers import ImageUploadPublicSerializer, ImageUploadSerializer
 from django.contrib.auth import get_user_model
-
+from django.utils import timezone
+from datetime import datetime
+from rest_framework.exceptions import ValidationError
 
 User = get_user_model()
+
+class BusinessConfigSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BusinessConfig
+        exclude = ['business']
+    
+    def validate(self, attrs):
+        start = datetime.combine(timezone.now().date(), attrs['agenda_start_time'])
+        end = datetime.combine(timezone.now().date(), attrs['agenda_end_time'])
+        # total_diff = (end - start).seconds / 3600
+        # min_diff = 2
+        if start >= end:
+            raise ValidationError("Horário de início não deve ser maior que horário de fim.")
+        return super().validate(attrs)
+
 
 class BusinessPublicSerializer(serializers.ModelSerializer):
     cover = ImageUploadPublicSerializer(read_only=True)
     logo = ImageUploadPublicSerializer(read_only=True)
     category = serializers.CharField(source='segment.category.id') 
-
+    config = BusinessConfigSerializer(read_only=True)
+    
     class Meta:
         model = Business
         fields = '__all__'
