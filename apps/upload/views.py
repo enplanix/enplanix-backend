@@ -21,12 +21,7 @@ class FileUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, 
     @action(methods=["get"], detail=True)
     def content(self, *_, **__):
         instance = self.get_object()
-        file_path = instance.file.path
-        mime_type, _ = mimetypes.guess_type(file_path)
-        response = FileResponse(instance.file, as_attachment=False)
-        if mime_type:
-            response["Content-Type"] = mime_type
-        return response
+        return FileResponse(instance.file, as_attachment=False)
 
 
 class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
@@ -41,12 +36,5 @@ class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin,
     @action(methods=["get"], detail=True)
     def content(self, *_, **__):
         instance = self.get_object()
-        file_path = instance.file.path
-        mime_type, _ = mimetypes.guess_type(file_path)
-        response = FileResponse(instance.file, as_attachment=False)
-        if mime_type:
-            response["Content-Type"] = mime_type
-        response.headers.pop("x-frame-options", None)
-        response.headers.pop("referrer-policy", None)
-        response.headers.pop("cross-origin-opener-policy", None)
-        return response
+        return FileResponse(instance.file, as_attachment=False)
+
