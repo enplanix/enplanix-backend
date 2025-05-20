@@ -1,7 +1,8 @@
 from rest_framework import permissions
-from rest_framework.mixins import CreateModelMixin
+from rest_framework.mixins import CreateModelMixin, UpdateModelMixin
 from rest_framework.viewsets import GenericViewSet
 
+from apps.account.models import User
 from apps.account.serializers import UserCreateSerializer
 
 

@@ -9,7 +9,7 @@ from rest_framework_simplejwt.serializers import (
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from apps.access.models import AccessPreference
-from apps.access.serializers import AccessPreferenceSerializer
+from apps.access.serializers import AccessPreferenceSerializer, UserSerializer
 from apps.business.serializers import BusinessPublicSerializer
 from rest_framework import exceptions
 
@@ -72,6 +72,14 @@ class MyAccessViewSet(GenericViewSet):
     def update_config(self, request):
         access = self.get_current_access(request)
         serializer = AccessPreferenceSerializer(access, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    @action(methods=["patch"], detail=False, serializer_class=UserSerializer)
+    def update_user_preferences(self, request):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
