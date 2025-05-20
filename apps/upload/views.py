@@ -26,7 +26,7 @@ class FileUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, 
         response = FileResponse(instance.file, as_attachment=False)
         if mime_type:
             response["Content-Type"] = mime_type
-        return FileResponse(instance.file, as_attachment=False)
+        return response
 
 
 class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
@@ -46,4 +46,4 @@ class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin,
         response = FileResponse(instance.file, as_attachment=False)
         if mime_type:
             response["Content-Type"] = mime_type
-        return FileResponse(instance.file, as_attachment=False)
+        return response
