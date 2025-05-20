@@ -59,7 +59,6 @@ class BusinessConfigViewSet(ModelViewSet):
     
     def get_queryset(self):
         business = self.request.user.preference.current_business
-        print(business)
         if business:
             return BusinessConfig.objects.filter(business=business)
         return BusinessConfig.objects.none()

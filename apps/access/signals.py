@@ -8,4 +8,3 @@ def create_default_preferences(sender, instance, created=False, **kwargs):
     if created:
         AccessPreference.objects.create(user=instance)
         UserPreference.objects.create(user=instance)
-    print('here')

@@ -50,10 +50,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         self.create_categories(categories)
-        print('test')
 
     def create_categories(self, categorias_dict):
-        print('ops')
         for nome_categoria, tipos in categorias_dict.items():
             for tipo, subcats in tipos.items():
                 categoria, _ = Category.objects.get_or_create(name=nome_categoria, type=tipo)
