@@ -11,15 +11,21 @@ from apps.upload.models import FileUpload, ImageUpload
 from apps.upload.serializers import FileUploadSerializer, ImageUploadPublicSerializer, ImageUploadSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
+import mimetypes
 
 class FileUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = FileUpload.objects.all()
     serializer_class = FileUploadSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
+    
     @action(methods=["get"], detail=True)
     def content(self, *_, **__):
         instance = self.get_object()
+        file_path = instance.file.path
+        mime_type, _ = mimetypes.guess_type(file_path)
+        response = FileResponse(instance.file, as_attachment=False)
+        if mime_type:
+            response["Content-Type"] = mime_type
         return FileResponse(instance.file, as_attachment=False)
 
 
@@ -35,4 +41,9 @@ class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin,
     @action(methods=["get"], detail=True)
     def content(self, *_, **__):
         instance = self.get_object()
+        file_path = instance.file.path
+        mime_type, _ = mimetypes.guess_type(file_path)
+        response = FileResponse(instance.file, as_attachment=False)
+        if mime_type:
+            response["Content-Type"] = mime_type
         return FileResponse(instance.file, as_attachment=False)
