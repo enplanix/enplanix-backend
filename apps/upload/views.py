@@ -46,5 +46,7 @@ class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin,
         response = FileResponse(instance.file, as_attachment=False)
         if mime_type:
             response["Content-Type"] = mime_type
-        del response["Content-Disposition"]
+        response.headers.pop("X-Frame-Options", None)
+        response.headers.pop("Referrer-Policy", None)
+        response.headers.pop("Cross-Origin-Opener-Policy", None)
         return response
