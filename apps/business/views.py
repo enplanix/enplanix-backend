@@ -4,9 +4,16 @@ from rest_framework.response import Response
 from apps.business.models import Business, BusinessConfig, BusinessMember, Segment
 from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentSerializer
 from rest_framework import filters
-import time
+
+class CustomBusinessFilter(filters.SearchFilter):
+
+    def get_search_fields(self, view, request):
+        if view.action == 'get_segments':
+            return ['name', 'code', 'description']
+        return super().get_search_fields(view, request)
 
 class BusinessViewSet(ModelViewSet):
+    filter_backends = [CustomBusinessFilter]
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
@@ -24,9 +31,11 @@ class BusinessViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def get_segments(self, request):
-        categories_data = Segment.objects.all()
-        serializer = SegmentSerializer(categories_data, many=True)
-        return Response(serializer.data)
+        page = self.paginate_queryset(self.filter_queryset(Segment.objects.all()))
+        serializer = SegmentSerializer(page, many=True)
+        response = self.get_paginated_response(serializer.data)
+        return response
+
 
     @action(methods=['post'], detail=False)
     def add_member(self, request):
