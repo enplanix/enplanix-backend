@@ -3,13 +3,13 @@ from core.models import UUIDChronoModel, UUIDModel
 from datetime import time
 
 class Segment(UUIDModel):
-    code = models.CharField(max_length=24)
+    code = models.PositiveSmallIntegerField(max_length=24)
     name = models.CharField(max_length=32)
     description = models.CharField(max_length=255)
     emoji = models.CharField(max_length=16)
 
     class Meta:
-        ordering = ['name']
+        ordering = ['code']
 
     def __str__(self):
         return f'{self.emoji} {self.name}'

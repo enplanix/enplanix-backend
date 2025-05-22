@@ -10,6 +10,12 @@ from rest_framework.exceptions import ValidationError
 
 User = get_user_model()
 
+class SegmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Segment
+        fields = '__all__'
+
+
 class BusinessConfigSerializer(serializers.ModelSerializer):
     class Meta:
         model = BusinessConfig
@@ -28,8 +34,8 @@ class BusinessConfigSerializer(serializers.ModelSerializer):
 class BusinessPublicSerializer(serializers.ModelSerializer):
     cover = ImageUploadPublicSerializer(read_only=True)
     logo = ImageUploadPublicSerializer(read_only=True)
-    # category = serializers.CharField(source='segment.category.id') 
     config = BusinessConfigSerializer(read_only=True)
+    segment_data = SegmentSerializer(source='segment', read_only=True) 
     
     class Meta:
         model = Business
@@ -83,9 +89,3 @@ class BusinessMembeAddSerializer(serializers.Serializer):
     def create(self, validated_data):
         instance = BusinessMember.objects.get_or_create(user=self.user, business=self.business)
         return instance
-        
-
-class SegmentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Segment
-        fields = '__all__'
