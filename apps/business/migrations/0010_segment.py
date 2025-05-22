@@ -15,12 +15,10 @@ class Migration(migrations.Migration):
             name='Segment',
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
                 ('code', models.CharField(max_length=24)),
                 ('name', models.CharField(max_length=32)),
                 ('description', models.CharField(max_length=255)),
-                ('emoji', models.CharField(max_length=1)),
+                ('emoji', models.CharField(max_length=16)),
             ],
             options={
                 'ordering': ['name'],

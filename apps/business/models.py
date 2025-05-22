@@ -6,7 +6,7 @@ class Segment(UUIDModel):
     code = models.CharField(max_length=24)
     name = models.CharField(max_length=32)
     description = models.CharField(max_length=255)
-    emoji = models.CharField(max_length=1)
+    emoji = models.CharField(max_length=16)
 
     class Meta:
         ordering = ['name']
