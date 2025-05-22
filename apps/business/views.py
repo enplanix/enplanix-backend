@@ -1,8 +1,8 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.business.models import Business, BusinessConfig, BusinessMember, Segment, SegmentCategory
-from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentCategorySerializer
+from apps.business.models import Business, BusinessConfig, BusinessMember, Segment
+from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentSerializer
 from rest_framework import filters
 import time
 
@@ -23,9 +23,9 @@ class BusinessViewSet(ModelViewSet):
         serializer.save()
 
     @action(methods=['get'], detail=False)
-    def get_segment_categories(self, request):
-        categories_data = SegmentCategory.objects.all().prefetch_related('segments')
-        serializer = SegmentCategorySerializer(categories_data, many=True)
+    def get_segments(self, request):
+        categories_data = Segment.objects.all()
+        serializer = SegmentSerializer(categories_data, many=True)
         return Response(serializer.data)
 
     @action(methods=['post'], detail=False)

@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from apps.access.serializers import UserSerializer
-from apps.business.models import Business, BusinessConfig, BusinessMember, Segment, SegmentCategory
+from apps.business.models import Business, BusinessConfig, BusinessMember, Segment
 from apps.upload.serializers import ImageUploadPublicSerializer, ImageUploadSerializer
 from django.contrib.auth import get_user_model
 from django.utils import timezone
@@ -28,7 +28,7 @@ class BusinessConfigSerializer(serializers.ModelSerializer):
 class BusinessPublicSerializer(serializers.ModelSerializer):
     cover = ImageUploadPublicSerializer(read_only=True)
     logo = ImageUploadPublicSerializer(read_only=True)
-    category = serializers.CharField(source='segment.category.id') 
+    # category = serializers.CharField(source='segment.category.id') 
     config = BusinessConfigSerializer(read_only=True)
     
     class Meta:
@@ -89,14 +89,3 @@ class SegmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Segment
         fields = '__all__'
-
-
-class SegmentCategorySerializer(serializers.ModelSerializer):
-    segments = serializers.SerializerMethodField()
-
-    class Meta:
-        model = SegmentCategory
-        fields = '__all__'
-
-    def get_segments(self, instance):
-        return SegmentSerializer(instance.segments.all(), many=True).data

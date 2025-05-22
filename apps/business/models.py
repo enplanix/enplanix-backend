@@ -1,25 +1,18 @@
 from django.db import models
 from core.models import UUIDChronoModel, UUIDModel
 from datetime import time
-from datetime import datetime
-from django.utils import timezone
-from rest_framework.exceptions import ValidationError
-
-class SegmentCategory(UUIDModel):
-    code = models.CharField(max_length=24)
-    name = models.CharField(max_length=32)
-
-    class Meta:
-        ordering = ['name']
-
 
 class Segment(UUIDModel):
     code = models.CharField(max_length=24)
-    category = models.ForeignKey(SegmentCategory, on_delete=models.CASCADE, related_name='segments')
     name = models.CharField(max_length=32)
+    description = models.CharField(max_length=255)
+    emoji = models.CharField(max_length=1)
 
     class Meta:
         ordering = ['name']
+
+    def __str__(self):
+        return f'{self.emoji} {self.name}'
 
 
 class Business(UUIDChronoModel):
@@ -34,7 +27,7 @@ class Business(UUIDChronoModel):
     logo = models.ForeignKey('upload.ImageUpload', related_name='+', on_delete=models.SET_NULL, blank=True, null=True)
     cover = models.ForeignKey('upload.ImageUpload', related_name='+', on_delete=models.SET_NULL, blank=True, null=True)
 
-    segment = models.ForeignKey(Segment, on_delete=models.PROTECT)
+    segment = models.ForeignKey(Segment, on_delete=models.PROTECT, null=True, blank=True)
 
     is_active = models.BooleanField(default=False)
     

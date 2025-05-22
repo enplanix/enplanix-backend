@@ -1,14 +1,10 @@
 from django.contrib import admin
-from .models import Business, BusinessConfig, BusinessMember, SegmentCategory, Segment
+from .models import Business, BusinessConfig, BusinessMember, Segment
 
 
-class SegmentInline(admin.TabularInline):
-    model = Segment
-    extra = 1
 
-@admin.register(SegmentCategory)
-class SegmentCategoryAdmin(admin.ModelAdmin):
-    inlines = [SegmentInline]
+@admin.register(Segment)
+class SegmentAdmin(admin.ModelAdmin):
     list_display = ['code', 'name']
 
 @admin.register(Business)
