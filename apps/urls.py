@@ -15,6 +15,7 @@ register_routes(router, import_module("apps.business.urls").routes, 'business')
 register_routes(router, import_module("apps.upload.urls").routes, 'upload')
 register_routes(router, import_module("apps.management.urls").routes, 'management')
 register_routes(router, import_module("apps.agenda.urls").routes, 'agenda')
+register_routes(router, import_module("apps.sale.urls").routes, 'sales')
 
 
 urlpatterns = [

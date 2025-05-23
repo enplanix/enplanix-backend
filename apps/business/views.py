@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from apps.business.models import Business, BusinessConfig, BusinessMember, Segment
 from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentSerializer
 from rest_framework import filters
+import time
+
 
 class CustomBusinessFilter(filters.SearchFilter):
 
@@ -11,6 +13,7 @@ class CustomBusinessFilter(filters.SearchFilter):
         if view.action == 'get_segments':
             return ['name', 'code', 'description']
         return super().get_search_fields(view, request)
+
 
 class BusinessViewSet(ModelViewSet):
     filter_backends = [CustomBusinessFilter]

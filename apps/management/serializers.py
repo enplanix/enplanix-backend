@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
-from apps.upload.serializers import ImageUploadPublicSerializer, ImageUploadSerializer
-from .models import Category, Client, Product, Service, Subcategory
+from apps.upload.serializers import ImageUploadPublicSerializer
+from .models import Category, Client, Product, Service
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -46,19 +46,8 @@ class ServicePublicSerializer(serializers.ModelSerializer):
         exclude = ['business']
 
 
-class SubCategorySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Subcategory
-        fields = '__all__'
-
-
 class CategorySerializer(serializers.ModelSerializer):
-    subcategories = serializers.SerializerMethodField()
 
     class Meta:
         model = Category
         fields = '__all__'
-
-    def get_subcategories(self, instance):
-        return SubCategorySerializer(instance.subcategories.all(), many=True).data

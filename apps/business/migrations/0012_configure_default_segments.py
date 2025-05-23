@@ -6,9 +6,9 @@ from django.db import migrations
 def configure_default_segments(apps, schema_editor):
     Business = apps.get_model('business', 'Business')
     Segment = apps.get_model('business', 'Segment')
-    default_segment = Segment.objects.get(code=1)
+    default_segment = Segment.objects.filter(code=1).last()
     Business.objects.update(segment=default_segment)
-
+    
 
 class Migration(migrations.Migration):
 

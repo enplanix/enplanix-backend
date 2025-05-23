@@ -5,7 +5,7 @@ from .models import Business, BusinessConfig, BusinessMember, Segment
 
 @admin.register(Segment)
 class SegmentAdmin(admin.ModelAdmin):
-    list_display = ['code', 'name']
+    list_display = ['code', 'name', 'emoji']
 
 @admin.register(Business)
 class BusinessAdmin(admin.ModelAdmin):

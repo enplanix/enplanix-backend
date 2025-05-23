@@ -17,7 +17,7 @@ class OfferType(models.TextChoices):
     SERVICE = "SERVICE", "Serviço"
 
 
-class Category(UUIDModel):
+class CategoryBase(UUIDModel):
     type = models.CharField(max_length=10, choices=OfferType.choices)
     name = models.CharField(max_length=255)
 
@@ -25,12 +25,12 @@ class Category(UUIDModel):
         return self.name
 
 
-class Subcategory(UUIDModel):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subcategories')
-    name = models.CharField(max_length=255)
+class Category(CategoryBase):
+    business = models.ForeignKey('business.Business', blank=True, null=True, on_delete=models.CASCADE)
 
-    def __str__(self):
-        return self.name
+
+class CategoryTemplate(CategoryBase):
+    segment = models.ForeignKey('business.Segment', on_delete=models.CASCADE)
 
 
 class Offer(UUIDChronoModel):
@@ -41,11 +41,14 @@ class Offer(UUIDChronoModel):
     description = models.TextField(blank=True, null=True)
     display_on_catalog = models.BooleanField(default=False)
 
-    category = models.ForeignKey(Subcategory, null=True, blank=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
     cover = models.ForeignKey(ImageUpload, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
 
     class Meta:
         abstract = True
+
+    def __str__(self):
+        return f'{self.name} / {self.business}'
 
 
 class Service(Offer):

@@ -3,7 +3,7 @@ from core.models import UUIDChronoModel, UUIDModel
 from datetime import time
 
 class Segment(UUIDModel):
-    code = models.PositiveSmallIntegerField(max_length=24)
+    code = models.PositiveSmallIntegerField()
     name = models.CharField(max_length=32)
     description = models.CharField(max_length=255)
     emoji = models.CharField(max_length=16)

@@ -7,7 +7,6 @@ from rest_framework import permissions
 from .serializers import CategorySerializer, ClientSerializer, ProductEditSerializer, ProductPublicSerializer, ServiceEditSerializer, ServicePublicSerializer
 from .models import Category, Client, OfferType, Product, Service
 
-
 class ClientViewSet(ModelViewSet):
     serializer_class = ClientSerializer
     filter_backends = [filters.SearchFilter]
@@ -43,7 +42,7 @@ class ProductViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def get_categories(self, request):
-        queryset = Category.objects.filter(type=OfferType.PRODUCT).prefetch_related('subcategories')
+        queryset = Category.objects.filter(type=OfferType.PRODUCT)
         serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
     
@@ -77,7 +76,7 @@ class ServiceViewSet(ModelViewSet):
 
     @action(methods=['get'], detail=False)
     def get_categories(self, request):
-        queryset = Category.objects.filter(type=OfferType.SERVICE).prefetch_related('subcategories')
+        queryset = Category.objects.filter(type=OfferType.SERVICE)
         serializer = CategorySerializer(queryset, many=True)
         return Response(serializer.data)
     
