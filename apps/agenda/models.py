@@ -13,6 +13,8 @@ class Agenda(UUIDChronoModel):
     end = models.TimeField()
     
     observations = models.TextField(blank=True)
+    created_by = models.ForeignKey('account.User', on_delete=models.SET_NULL, blank=True, null=True, related_name='created_agendas')
+    
     objects: CustomManager = CustomManager()
 
     def clean(self):

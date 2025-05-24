@@ -1,3 +1,4 @@
+from email.policy import default
 from rest_framework import serializers
 
 from apps.upload.serializers import ImageUploadPublicSerializer
@@ -48,6 +49,10 @@ class ServicePublicSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
 
+    ref_count = serializers.IntegerField(default=0, read_only=True) # annotated
+
     class Meta:
         model = Category
         fields = '__all__'
+
+    

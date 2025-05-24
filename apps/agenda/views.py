@@ -16,7 +16,7 @@ class AgendaViewSet(viewsets.ModelViewSet, BusinessViewMixin):
         return AgendaPublicSerializer
     
     def perform_create(self, serializer):
-        serializer.save(business=self.get_request_business())
+        serializer.save(business=self.get_request_business(), created_by=self.request.user)
 
     @action(methods=['get'], detail=False)
     def get_by_date(self, request):

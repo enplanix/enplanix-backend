@@ -16,7 +16,6 @@ class UserPreferenceSerializer(serializers.ModelSerializer):
         model = UserPreference
         fields = '__all__'
 
-
 class UserSerializer(serializers.ModelSerializer):
 
     full_name = serializers.SerializerMethodField()

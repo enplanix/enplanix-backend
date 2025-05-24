@@ -43,7 +43,7 @@ class Offer(UUIDChronoModel):
     description = models.TextField(blank=True, null=True)
     display_on_catalog = models.BooleanField(default=False)
 
-    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.PROTECT)
     cover = models.ForeignKey(ImageUpload, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
     objects: CustomManager = CustomManager()
     

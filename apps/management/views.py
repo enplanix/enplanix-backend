@@ -3,7 +3,9 @@ from rest_framework import filters
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions
-
+from rest_framework.exceptions import ValidationError
+from django.db.models.deletion import ProtectedError
+from django.db.models import Count
 from core.views import BusinessViewMixin
 
 from .serializers import CategorySerializer, ClientSerializer, ProductEditSerializer, ProductPublicSerializer, ServiceEditSerializer, ServicePublicSerializer
@@ -84,11 +86,29 @@ class ServiceViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-class CategoryViewSet(ModelViewSet):
+class CategoryViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = CategorySerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name']
 
     def get_queryset(self):
+        return Category.objects.within_request_business(self.request)
+
+    def filter_queryset(self, queryset):
         category_type = self.request.query_params.get('type', None)
-        if not category_type:
-            return Category.objects.none()
-        return Category.objects.within_request_business(self.request).filter(type=category_type)
+        include_count = self.request.query_params.get('include_count', None)
+        queryset =  super().filter_queryset(queryset)
+        if category_type:
+            queryset = queryset.filter(type=category_type)
+        if include_count:
+            queryset = queryset.annotate(ref_count=Count('product')+ Count('service'))
+        return queryset
+
+    def perform_create(self, serializer):
+        serializer.save(business=self.get_request_business())
+
+    def perform_destroy(self, instance):
+        try:
+            instance.delete()
+        except ProtectedError:
+            raise ValidationError('Não foi possível excluir esta categoria, pois ela está vinculada a um ou mais produtos ou serviços.')

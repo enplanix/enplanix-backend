@@ -14,7 +14,7 @@ class AgendaEditSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Agenda
-        exclude = ['business']
+        exclude = ['business', 'created_by']
     
     def create(self, validated_data):
         extra_data = validated_data.pop('extra_nested', None)

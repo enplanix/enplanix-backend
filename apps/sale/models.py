@@ -1,3 +1,4 @@
+from xml.etree.ElementTree import TreeBuilder
 from django.core.validators import MinValueValidator
 from core.managers import CustomManager
 from core.models import UUIDChronoModel, UUIDModel
@@ -23,8 +24,13 @@ class Sale(UUIDChronoModel):
     payment = models.CharField(max_length=20, choices=PaymentMethod.choices, default=PaymentMethod.CASH)
     status = models.CharField(max_length=20, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     total_price = models.DecimalField(max_digits=15, decimal_places=3, default=0)
+    agenda_extra = models.OneToOneField('agenda.AgendaExtra', on_delete=models.SET_NULL, blank=True, null=True)
+
     objects: CustomManager = CustomManager()
     
+    class Meta:
+        ordering = ['-created_at']
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         
@@ -32,7 +38,7 @@ class Sale(UUIDChronoModel):
         self.total_price = self.sale_items.aggregate(total=Sum('snapshot_price') * F('quantity'))['total']
 
 
-class SaleItem(UUIDModel):
+class SaleItem(UUIDChronoModel):
     class TypeChoices(models.TextChoices):
         PRODUCT = 'PRODUCT', 'Product'
         SERVICE = 'SERVICE', 'Service'
@@ -49,6 +55,7 @@ class SaleItem(UUIDModel):
         self.snapshot_price = self.origin.price
         self.snapshot_code = self.origin.code
         return super().save(*args, **kwargs)
+
 
 class ProductSaleItem(SaleItem):
     origin = models.ForeignKey('management.Product', on_delete=models.SET_NULL, blank=True, null=True)

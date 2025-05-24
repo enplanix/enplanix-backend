@@ -11,7 +11,7 @@ from apps.upload.models import FileUpload, ImageUpload
 from apps.upload.serializers import FileUploadSerializer, ImageUploadPublicSerializer, ImageUploadSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
-import mimetypes
+
 
 class FileUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
     queryset = FileUpload.objects.all()
