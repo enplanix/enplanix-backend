@@ -1,14 +1,14 @@
 from django.core.management.base import BaseCommand
 from django.core import serializers
-from apps.management.models import Category, CategoryTemplate
+from apps.management.models import Category, CategoryBase, CategoryTemplate
+from django.core.serializers import serialize
+
 
 class Command(BaseCommand):
 
-    def handle(self, *args, **kwargs):
-        templates = CategoryTemplate.objects.all()
-        category_ids = templates.values_list('categorybase_ptr_id', flat=True)
-        categories = Category.objects.filter(id__in=category_ids)
-        
-        data = serializers.serialize('json', list(categories) + list(templates))
-        with open('fixtures/category_templates.json', 'w') as file:
-            file.write(data)
+     def handle(self, *args, **kwargs):
+        template_ids = CategoryTemplate.objects.values_list('pk', flat=True)
+        categories = CategoryBase.objects.filter(pk__in=template_ids)
+        combined_json = serialize('json', categories)
+        with open('fixtures/categorybase.json', 'w') as f:
+            f.write(combined_json)

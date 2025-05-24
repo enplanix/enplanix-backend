@@ -1,12 +1,11 @@
-# from django.db.models import signals
-# from django.dispatch import receiver
+from django.db.models import signals
+from django.dispatch import receiver
 
-# from .models import Category, CategoryTemplate
+from apps.management.utils import generate_business_categories
 
 
-# @receiver(signals.post_delete, sender='business.Business')
-# def add_business_default_categories(instance, **kwargs):
-#     for category in CategoryTemplate.objects.all():
-#         segment = instance.segment
-#         Category.objects.get_or_create(**category)
-#     # ImageUpload.objects.filter(id__in=[instance.cover_id, instance.logo_id]).delete()
+@receiver(signals.post_save, sender='business.Business')
+def add_business_default_categories(instance, created=True, **kwargs):
+    if created:
+        print('created')
+        generate_business_categories()

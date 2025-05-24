@@ -1,5 +1,4 @@
 from django.contrib import admin
-# from .models import Category, Client, Service, Product, CategoryTemplate
 from .models import Client, Service, Product, Category, CategoryTemplate, CategoryTemplate
 
 
@@ -28,4 +27,4 @@ class CategoryTemplateAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'type']
-    list_filter = ['type']
+    list_filter = ['type', 'business']

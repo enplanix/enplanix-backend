@@ -13,6 +13,7 @@ class Client(UUIDChronoModel, AddressedModel):
     color = models.CharField(max_length=7, blank=True, default='#FFFFFF')
     objects: CustomManager = CustomManager()
 
+
 class OfferType(models.TextChoices):
     PRODUCT = "PRODUCT", "Produto"
     SERVICE = "SERVICE", "Serviço"
@@ -28,7 +29,7 @@ class CategoryBase(UUIDModel):
 
 class Category(CategoryBase):
     business = models.ForeignKey('business.Business', blank=True, null=True, on_delete=models.CASCADE)
-
+    objects: CustomManager = CustomManager()
 
 class CategoryTemplate(CategoryBase):
     segment = models.ForeignKey('business.Segment', on_delete=models.CASCADE)

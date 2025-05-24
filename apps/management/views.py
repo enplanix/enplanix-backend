@@ -82,3 +82,13 @@ class ServiceViewSet(ModelViewSet):
         queryset = self.filter_queryset(Service.objects.within_request_business(self.request))
         serializer = ServicePublicSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class CategoryViewSet(ModelViewSet):
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        category_type = self.request.query_params.get('type', None)
+        if not category_type:
+            return Category.objects.none()
+        return Category.objects.within_request_business(self.request).filter(type=category_type)

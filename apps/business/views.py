@@ -27,6 +27,10 @@ class BusinessViewSet(ModelViewSet, BusinessViewMixin):
             return BusinessEditSerializer
         return BusinessPublicSerializer
 
+    def create(self, request, *args, **kwargs):
+        print(request.data)
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         serializer.save()
 
