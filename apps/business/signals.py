@@ -15,6 +15,7 @@ def set_additional_business_models(instance, created=False, **kwargs):
         BusinessMember.objects.create(business=instance, user=request.user)
         BusinessConfig.objects.get_or_create(business=instance)
 
+
 @receiver(signals.post_delete, sender='business.Business')
 def remove_business_images(instance, **kwargs):
     ImageUpload.objects.filter(id__in=[instance.cover_id, instance.logo_id]).delete()

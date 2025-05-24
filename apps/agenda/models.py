@@ -1,4 +1,5 @@
 from django.db import models
+from core.managers import BusinessFilterMixin, CustomManager
 from core.models import UUIDChronoModel, UUIDModel
 from django.core.exceptions import ValidationError
 
@@ -12,6 +13,7 @@ class Agenda(UUIDChronoModel):
     end = models.TimeField()
     
     observations = models.TextField(blank=True)
+    objects: CustomManager = CustomManager()
 
     def clean(self):
         if self.start > self.end:

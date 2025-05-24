@@ -4,41 +4,38 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import permissions
 
+from core.views import BusinessViewMixin
+
 from .serializers import CategorySerializer, ClientSerializer, ProductEditSerializer, ProductPublicSerializer, ServiceEditSerializer, ServicePublicSerializer
 from .models import Category, Client, OfferType, Product, Service
 
-class ClientViewSet(ModelViewSet):
+
+class ClientViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = ClientSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['first_name', 'last_name', 'email', 'phone', 'address']
 
     def get_queryset(self):
-        business = self.request.user.preference.current_business
-        if business:
-            return Client.objects.filter(business=business)
-        return Client.objects.none()
+        return Client.objects.within_request_business(self.request)
 
     def perform_create(self, serializer):
-        serializer.save(business=self.request.user.preference.current_business)
+        serializer.save(business=self.get_request_business())
 
 
-class ProductViewSet(ModelViewSet):
+class ProductViewSet(ModelViewSet, BusinessViewMixin):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'code']
 
+    def get_queryset(self):
+        return Product.objects.within_request_business(self.request)
+        
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
             return ProductEditSerializer
         return ProductPublicSerializer
 
-    def get_queryset(self):
-        business = self.request.user.preference.current_business
-        if business:
-            return Product.objects.filter(business=business)
-        return Product.objects.none()
-    
     def perform_create(self, serializer):
-        serializer.save(business=self.request.user.preference.current_business)
+        serializer.save(business=self.get_request_business())
 
     @action(methods=['get'], detail=False)
     def get_categories(self, request):
@@ -51,7 +48,7 @@ class ProductViewSet(ModelViewSet):
         business = request.query_params.get('business', None)
         if not business:
             return Response({'detail': 'Business not specified'}, status=400)
-        queryset = self.filter_queryset(Product.objects.filter(business=business))
+        queryset = self.filter_queryset(Product.objects.within_request_business(self.request))
         serializer = ProductPublicSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -66,10 +63,7 @@ class ServiceViewSet(ModelViewSet):
         return ServicePublicSerializer
 
     def get_queryset(self):
-        business = self.request.user.preference.current_business
-        if business:
-            return Service.objects.filter(business=business)
-        return Service.objects.none()
+        return Service.objects.within_request_business(self.request)
     
     def perform_create(self, serializer):
         serializer.save(business=self.request.user.preference.current_business)
@@ -85,6 +79,6 @@ class ServiceViewSet(ModelViewSet):
         business = request.query_params.get('business', None)
         if not business:
             return Response({'detail': 'Business not specified'}, status=400)
-        queryset = self.filter_queryset(Service.objects.filter(business=business))
+        queryset = self.filter_queryset(Service.objects.within_request_business(self.request))
         serializer = ServicePublicSerializer(queryset, many=True)
         return Response(serializer.data)

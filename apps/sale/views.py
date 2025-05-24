@@ -9,7 +9,4 @@ class SaleViewSet(ModelViewSet):
     serializer_class = SaleSerializer
 
     def get_queryset(self):
-        business = self.request.user.preference.current_business
-        if business:
-            return Sale.objects.filter(business=business)
-        return Sale.objects.none()
+        return Sale.objects.within_request_business(self.request)

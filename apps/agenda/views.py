@@ -4,24 +4,19 @@ from apps.agenda.models import Agenda
 from rest_framework.response import Response
 
 from apps.agenda.serializers import AgendaEditSerializer, AgendaPublicSerializer
+from core.views import BusinessViewMixin
 
-class AgendaViewSet(viewsets.ModelViewSet):
+class AgendaViewSet(viewsets.ModelViewSet, BusinessViewMixin):
+    def get_queryset(self):
+        return Agenda.objects.within_request_business(self.request)
+    
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
             return AgendaEditSerializer
         return AgendaPublicSerializer
-
-    def get_current_business(self):
-        return self.request.user.preference.current_business
-
-    def get_queryset(self):
-        business = self.get_current_business()
-        if business:
-            return Agenda.objects.filter(business=business)
-        return Agenda.objects.none()
     
     def perform_create(self, serializer):
-        serializer.save(business=self.get_current_business())
+        serializer.save(business=self.get_request_business())
 
     @action(methods=['get'], detail=False)
     def get_by_date(self, request):

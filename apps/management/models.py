@@ -1,4 +1,5 @@
 from apps.upload.models import ImageUpload
+from core.managers import CustomManager
 from core.models import AddressedModel, UUIDChronoModel, UUIDModel
 from django.db import models
 
@@ -10,7 +11,7 @@ class Client(UUIDChronoModel, AddressedModel):
     phone = models.CharField(max_length=255, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     color = models.CharField(max_length=7, blank=True, default='#FFFFFF')
-
+    objects: CustomManager = CustomManager()
 
 class OfferType(models.TextChoices):
     PRODUCT = "PRODUCT", "Produto"
@@ -43,7 +44,8 @@ class Offer(UUIDChronoModel):
 
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.CASCADE)
     cover = models.ForeignKey(ImageUpload, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
-
+    objects: CustomManager = CustomManager()
+    
     class Meta:
         abstract = True
 
@@ -61,7 +63,7 @@ class Service(Offer):
 
 class Product(Offer):
     images = models.ManyToManyField(ImageUpload, blank=True)
-
+    
     def save(self, *args, **kwargs):
         self.type = 'product'
         super().save(*args, **kwargs)

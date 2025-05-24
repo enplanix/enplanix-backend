@@ -1,4 +1,5 @@
 from django.db import models
+from core.managers import CustomManager
 from core.models import UUIDChronoModel, UUIDModel
 from datetime import time
 
@@ -30,6 +31,7 @@ class Business(UUIDChronoModel):
     segment = models.ForeignKey(Segment, on_delete=models.PROTECT, null=True, blank=True)
 
     is_active = models.BooleanField(default=False)
+    objects: CustomManager = CustomManager(user_field='members__user')
     
     class Meta:
         verbose_name = 'Business'
@@ -47,7 +49,8 @@ class BusinessConfig(UUIDModel):
     agenda_start_time = models.TimeField(default=time(7, 0))
     agenda_end_time = models.TimeField(default=time(18, 0))
     agenda_allow_conflicting_time = models.BooleanField(default=False)
-
+    objects: CustomManager = CustomManager()
+    
     def __str__(self):
         return self.business.name
 
@@ -55,6 +58,7 @@ class BusinessConfig(UUIDModel):
 class BusinessMember(UUIDChronoModel):
     business = models.ForeignKey(Business, on_delete=models.CASCADE, related_name='members')
     user = models.ForeignKey("account.User", on_delete=models.CASCADE, related_name='member_profiles')
+    objects: CustomManager = CustomManager()
 
     class Meta:
         constraints = [

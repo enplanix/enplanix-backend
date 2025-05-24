@@ -1,4 +1,5 @@
 from django.core.validators import MinValueValidator
+from core.managers import CustomManager
 from core.models import UUIDChronoModel, UUIDModel
 from django.db import models
 from django.db.models import Sum, F
@@ -22,7 +23,8 @@ class Sale(UUIDChronoModel):
     payment = models.CharField(max_length=20, choices=PaymentMethod.choices, default=PaymentMethod.CASH)
     status = models.CharField(max_length=20, choices=StatusChoices.choices, default=StatusChoices.PENDING)
     total_price = models.DecimalField(max_digits=15, decimal_places=3, default=0)
-
+    objects: CustomManager = CustomManager()
+    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         

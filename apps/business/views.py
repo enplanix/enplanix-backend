@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from apps.business.models import Business, BusinessConfig, BusinessMember, Segment
 from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentSerializer
 from rest_framework import filters
-import time
+
+from core.views import BusinessViewMixin
 
 
 class CustomBusinessFilter(filters.SearchFilter):
@@ -15,19 +16,16 @@ class CustomBusinessFilter(filters.SearchFilter):
         return super().get_search_fields(view, request)
 
 
-class BusinessViewSet(ModelViewSet):
+class BusinessViewSet(ModelViewSet, BusinessViewMixin):
     filter_backends = [CustomBusinessFilter]
+
+    def get_queryset(self):
+        return Business.objects.from_request_user(self.request)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
             return BusinessEditSerializer
         return BusinessPublicSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        if user:
-            return Business.objects.filter(members__user=user)
-        return Business.objects.none()
 
     def perform_create(self, serializer):
         serializer.save()
@@ -39,41 +37,35 @@ class BusinessViewSet(ModelViewSet):
         response = self.get_paginated_response(serializer.data)
         return response
 
-
     @action(methods=['post'], detail=False)
     def add_member(self, request):
-        serializer = BusinessMembeAddSerializer(data=request.data, business=self.request.user.preference.current_business)
+        serializer = BusinessMembeAddSerializer(data=request.data, business=self.get_request_business())
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({"detail": "Sucesso"})
 
 
-class BusinessMemberViewSet(ModelViewSet):
+class BusinessMemberViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = BusinessMemberPublicSerializer
     filter_backends = [filters.SearchFilter]
     search_fields = ['user__email', 'user__first_name', 'user__last_name']
+
+    def get_queryset(self):
+        return BusinessMember.objects.within_request_business(self.request)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
             return BusinessMembeAddSerializer
         return BusinessMemberPublicSerializer
 
-    def get_queryset(self):
-        business = self.request.user.preference.current_business
-        if business:
-            return BusinessMember.objects.filter(business=business)
-        return BusinessMember.objects.none()
+   
 
-
-class BusinessConfigViewSet(ModelViewSet):
+class BusinessConfigViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = BusinessConfigSerializer
     model = BusinessConfig
     
     def get_queryset(self):
-        business = self.request.user.preference.current_business
-        if business:
-            return BusinessConfig.objects.filter(business=business)
-        return BusinessConfig.objects.none()
+        return BusinessConfig.objects.within_request_business(self.request)
 
     @action(methods=['get'], detail=False)
     def get_current(self, request):
