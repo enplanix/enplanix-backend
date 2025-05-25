@@ -14,7 +14,6 @@ from .models import Category, Client, OfferType, Product, Service
 
 class ClientViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = ClientSerializer
-    filter_backends = [filters.SearchFilter]
     search_fields = ['first_name', 'last_name', 'email', 'phone', 'address']
 
     def get_queryset(self):
@@ -25,7 +24,6 @@ class ClientViewSet(ModelViewSet, BusinessViewMixin):
 
 
 class ProductViewSet(ModelViewSet, BusinessViewMixin):
-    filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'code']
 
     def get_queryset(self):
@@ -56,7 +54,6 @@ class ProductViewSet(ModelViewSet, BusinessViewMixin):
 
 
 class ServiceViewSet(ModelViewSet):
-    filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'code']
 
     def get_serializer_class(self):
@@ -88,7 +85,6 @@ class ServiceViewSet(ModelViewSet):
 
 class CategoryViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = CategorySerializer
-    filter_backends = [filters.SearchFilter]
     search_fields = ['name']
 
     def get_queryset(self):

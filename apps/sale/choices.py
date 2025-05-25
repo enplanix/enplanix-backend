@@ -8,9 +8,9 @@ class SalePaymentMethod(models.TextChoices):
     BOLETO = 'BOLETO', 'Boleto'
 
 class SaleStatusChoices(models.TextChoices):
-    PENDING = 'PENDING', 'Pendente',
-    APPROVED = 'COMPLETED', 'Completada'
-    CANCELED = 'CANCELED', 'Cancelada'
+    PENDING = 'PENDING', 'Pendentes',
+    COMPLETED = 'COMPLETED', 'Completadas'
+    CANCELED = 'CANCELED', 'Canceladas'
 
 
 class SaleTypeChoices(models.TextChoices):

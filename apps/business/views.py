@@ -18,7 +18,7 @@ class CustomBusinessFilter(filters.SearchFilter):
 
 class BusinessViewSet(ModelViewSet, BusinessViewMixin):
     filter_backends = [CustomBusinessFilter]
-
+    
     def get_queryset(self):
         return Business.objects.from_request_user(self.request)
 
@@ -50,7 +50,6 @@ class BusinessViewSet(ModelViewSet, BusinessViewMixin):
 
 class BusinessMemberViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = BusinessMemberPublicSerializer
-    filter_backends = [filters.SearchFilter]
     search_fields = ['user__email', 'user__first_name', 'user__last_name']
 
     def get_queryset(self):

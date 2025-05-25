@@ -38,6 +38,7 @@ class SaleSerializer(DynamicFieldsModelSerializer):
     class Meta:
         model = Sale
         exclude = ['business', 'created_by']
+        read_only_fields = ['status']
 
     def update_sale_items(self, sale, sale_items):
         if sale_items is None:
