@@ -1,3 +1,4 @@
+from apps.management.choices import OfferType
 from apps.upload.models import ImageUpload
 from core.managers import CustomManager
 from core.models import AddressedModel, UUIDChronoModel, UUIDModel
@@ -12,11 +13,6 @@ class Client(UUIDChronoModel, AddressedModel):
     email = models.EmailField(blank=True, null=True)
     color = models.CharField(max_length=7, blank=True, default='#FFFFFF')
     objects: CustomManager = CustomManager()
-
-
-class OfferType(models.TextChoices):
-    PRODUCT = "PRODUCT", "Produto"
-    SERVICE = "SERVICE", "Serviço"
 
 
 class CategoryBase(UUIDModel):
@@ -45,10 +41,8 @@ class Offer(UUIDChronoModel):
 
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.PROTECT)
     cover = models.ForeignKey(ImageUpload, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')
+    type = models.CharField(choices=OfferType.choices, blank=True, null=True)
     objects: CustomManager = CustomManager()
-    
-    class Meta:
-        abstract = True
 
     def __str__(self):
         return f'{self.name} / {self.business}'
@@ -58,7 +52,7 @@ class Service(Offer):
     duration = models.PositiveSmallIntegerField(blank=True, default=30)
 
     def save(self, *args, **kwargs):
-        self.type = 'service'
+        self.type = OfferType.SERVICE
         super().save(*args, **kwargs)
 
 
@@ -66,5 +60,5 @@ class Product(Offer):
     images = models.ManyToManyField(ImageUpload, blank=True)
     
     def save(self, *args, **kwargs):
-        self.type = 'product'
+        self.type = OfferType.PRODUCT
         super().save(*args, **kwargs)

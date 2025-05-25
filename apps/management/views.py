@@ -101,7 +101,7 @@ class CategoryViewSet(ModelViewSet, BusinessViewMixin):
         if category_type:
             queryset = queryset.filter(type=category_type)
         if include_count:
-            queryset = queryset.annotate(ref_count=Count('product')+ Count('service'))
+            queryset = queryset.annotate(ref_count=Count('offer'))
         return queryset
 
     def perform_create(self, serializer):

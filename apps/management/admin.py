@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, Service, Product, Category, CategoryTemplate, CategoryTemplate
+from .models import Client, Offer, Product, Service, Category, CategoryTemplate, CategoryTemplate
 
 
 @admin.register(Client)
@@ -15,6 +15,21 @@ class ServiceAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
+
+
+# @admin.register(OfferV2)
+# class OfferV2Admin(admin.ModelAdmin):
+#     list_display = ['id', 'name']
+
+
+# @admin.register(Service)
+# class ServiceV2Admin(admin.ModelAdmin):
+#     list_display = ['id', 'name', 'price', 'duration']
+
+
+# @admin.register(Product)
+# class ProductV2Admin(admin.ModelAdmin):
+#     list_display = ['id', 'name']
 
 
 @admin.register(CategoryTemplate)

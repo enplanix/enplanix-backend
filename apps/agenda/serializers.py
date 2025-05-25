@@ -4,6 +4,8 @@ from apps.agenda.models import Agenda, AgendaExtra
 
 class AgendaExtraSerializer(serializers.ModelSerializer):
 
+    sale = serializers.UUIDField(source='sale.id', read_only=True)
+
     class Meta:
         model = AgendaExtra
         fields = '__all__'
