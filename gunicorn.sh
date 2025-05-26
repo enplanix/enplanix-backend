@@ -9,4 +9,11 @@
 #   --keep-alive 1 \
 #   --log-level critical
 
-uvicorn backend.asgi:application --host 0.0.0.0 --port 8000 --workers 1
+uvicorn backend.asgi:application \
+  --host 0.0.0.0 \
+  --port 8000 \
+  --workers 2 \
+  --loop uvloop \
+  --http httptools \
+  --timeout-keep-alive 5 \
+  --log-level critical
