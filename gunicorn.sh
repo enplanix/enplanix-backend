@@ -7,7 +7,7 @@
 #     --keep-alive 5
 
 # single thread
-gunicorn backend.wsgi:application \
+gunicorn backend.asgi:application \
     --worker-class gthread \
     --workers 1 \
     --threads 4 \
