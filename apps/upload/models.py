@@ -18,7 +18,7 @@ IMAGE_EXTENSION_VALIDATOR = FileExtensionValidator(["png", "jpg", "jpeg"])
 
 def upload_to_using_model_uuid(instance, filename):
     ext = filename.split('.')[-1]
-    today = timezone.now().strftime('%m/%Y')
+    today = timezone.now().strftime('%m-%Y')
     unique_id = str(instance.id)
     return os.path.join(today, f"{unique_id}.{ext}")
 
