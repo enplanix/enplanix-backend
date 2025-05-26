@@ -5,6 +5,7 @@ from apps.business.models import Business, BusinessConfig, BusinessMember, Segme
 from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentSerializer
 from rest_framework import filters
 
+from core.utils import observe_queries
 from core.views import BusinessViewMixin
 
 
@@ -53,14 +54,13 @@ class BusinessMemberViewSet(ModelViewSet, BusinessViewMixin):
     search_fields = ['user__email', 'user__first_name', 'user__last_name']
 
     def get_queryset(self):
-        return BusinessMember.objects.within_request_business(self.request)
+        return BusinessMember.objects.within_request_business(self.request).select_related('user__profile_preference')
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
             return BusinessMembeAddSerializer
         return BusinessMemberPublicSerializer
 
-   
 
 class BusinessConfigViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = BusinessConfigSerializer
