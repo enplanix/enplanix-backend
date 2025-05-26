@@ -1,0 +1,24 @@
+# Tabela de Workers e Threads recomendados para Gunicorn + Uvicorn
+# ---------------------------------------------------------------
+#  Cores | Workers       | Threads por Worker | Comentários
+# ---------------------------------------------------------------
+#  1     | 1             | 2                  | Single-core: 1 worker evita disputa por CPU.
+#        |               |                    | Threads ajudam em operações I/O (ex: uploads).
+# ---------------------------------------------------------------
+#  2     | 2             | 2-3                | Dois workers para aproveitar os 2 núcleos.
+#        |               |                    | Threads aumentam concorrência para I/O.
+# ---------------------------------------------------------------
+#  4     | 4             | 3-4                | Um worker por core.
+#        |               |                    | Threads para melhorar operações assíncronas.
+# ---------------------------------------------------------------
+#  8     | 6-8           | 4-6                | Pode usar mais workers que cores para escalabilidade.
+#        |               |                    | Cuidado com memória ao aumentar threads.
+# ---------------------------------------------------------------
+# 16+    | 12-16         | 6                  | Escala agressiva para VPS ou servidores dedicados.
+#        |               |                    | Monitorar RAM e CPU para evitar gargalos.
+# ---------------------------------------------------------------
+
+# Dicas:
+# - Se seu app é muito I/O-bound, threads ajudam muito.
+# - Se CPU-bound, priorize mais workers, menos threads.
+# - Monitorar sempre é essencial para ajustar.
