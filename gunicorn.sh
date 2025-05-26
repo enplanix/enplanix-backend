@@ -1,5 +1,4 @@
-# When you change hardware, check workers-help.txt
-
+#!/bin/sh
 gunicorn backend.asgi:application \
     --worker-class uvicorn.workers.UvicornWorker \
     --workers 1 \
