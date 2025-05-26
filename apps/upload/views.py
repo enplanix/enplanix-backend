@@ -11,6 +11,17 @@ from apps.upload.models import FileUpload, ImageUpload
 from apps.upload.serializers import FileUploadSerializer, ImageUploadPublicSerializer, ImageUploadSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
+from django.conf import settings
+from django.http.response import HttpResponse
+
+def get_file_response(instance):
+    if settings.DEBUG:
+        return FileResponse(instance.file, as_attachment=False)
+    else:
+        response = HttpResponse()
+        response['Content-Type'] = ''
+        response['X-Accel-Redirect'] = f'/uploads/{instance.file.name}'
+        return response
 
 
 class FileUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
@@ -21,7 +32,7 @@ class FileUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, 
     @action(methods=["get"], detail=True)
     def content(self, *_, **__):
         instance = self.get_object()
-        return FileResponse(instance.file, as_attachment=False)
+        return get_file_response(instance)
 
 
 class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
@@ -36,5 +47,5 @@ class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin,
     @action(methods=["get"], detail=True)
     def content(self, *_, **__):
         instance = self.get_object()
-        return FileResponse(instance.file, as_attachment=False)
+        return get_file_response(instance)
 
