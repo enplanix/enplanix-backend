@@ -5,18 +5,23 @@ from rest_framework.mixins import (
     RetrieveModelMixin,
     UpdateModelMixin,
 )
-from rest_framework.viewsets import GenericViewSet
+from adrf.viewsets import GenericViewSet
 
-from apps.upload.models import FileUpload, ImageUpload
-from apps.upload.serializers import FileUploadSerializer, ImageUploadPublicSerializer, ImageUploadSerializer
 from rest_framework.decorators import action
 from rest_framework import permissions
 from django.conf import settings
 from django.http.response import HttpResponse
+from rest_framework.response import Response
+from asgiref.sync import sync_to_async
+from .models import FileUpload, ImageUpload
+from .serializers import FileUploadSerializer, ImageUploadPublicSerializer, ImageUploadSerializer
 
-def get_file_response(instance):
+
+
+async def get_file_response(instance):
     if settings.DEBUG:
-        return FileResponse(instance.file, as_attachment=False)
+        response = await sync_to_async(FileResponse)(instance.file, as_attachment=False)
+        return response
     else:
         response = HttpResponse()
         response['Content-Type'] = ''
@@ -28,11 +33,36 @@ class FileUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, 
     queryset = FileUpload.objects.all()
     serializer_class = FileUploadSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
     @action(methods=["get"], detail=True)
-    def content(self, *_, **__):
-        instance = self.get_object()
-        return get_file_response(instance)
+    async def content(self, request, *args, **kwargs):
+        instance = await sync_to_async(self.get_object)()
+        return await get_file_response(instance)
+
+    async def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        await sync_to_async(serializer.is_valid)(raise_exception=True)
+        await sync_to_async(serializer.save)()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
+
+    async def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = await sync_to_async(self.get_object)()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        await sync_to_async(serializer.is_valid)(raise_exception=True)
+        await sync_to_async(serializer.save)()
+        return Response(serializer.data)
+
+    async def retrieve(self, request, *args, **kwargs):
+        instance = await sync_to_async(self.get_object)()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    async def destroy(self, request, *args, **kwargs):
+        instance = await sync_to_async(self.get_object)()
+        await sync_to_async(instance.delete)()
+        return Response(status=204)
 
 
 class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin, DestroyModelMixin, GenericViewSet):
@@ -45,7 +75,31 @@ class ImageUploadViewSet(CreateModelMixin, UpdateModelMixin, RetrieveModelMixin,
         return ImageUploadPublicSerializer
 
     @action(methods=["get"], detail=True)
-    def content(self, *_, **__):
-        instance = self.get_object()
-        return get_file_response(instance)
+    async def content(self, request, *args, **kwargs):
+        instance = await sync_to_async(self.get_object)()
+        return await get_file_response(instance)
 
+    async def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        await sync_to_async(serializer.is_valid)(raise_exception=True)
+        await sync_to_async(serializer.save)()
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=201, headers=headers)
+
+    async def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = await sync_to_async(self.get_object)()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        await sync_to_async(serializer.is_valid)(raise_exception=True)
+        await sync_to_async(serializer.save)()
+        return Response(serializer.data)
+
+    async def retrieve(self, request, *args, **kwargs):
+        instance = await sync_to_async(self.get_object)()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+    async def destroy(self, request, *args, **kwargs):
+        instance = await sync_to_async(self.get_object)()
+        await sync_to_async(instance.delete)()
+        return Response(status=204)
