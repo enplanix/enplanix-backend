@@ -7,4 +7,4 @@ gunicorn backend.asgi:application \
   --bind 0.0.0.0:8000 \
   --timeout 30 \
   --keep-alive 1 \
-  --log-level warning
+  --log-level critical
