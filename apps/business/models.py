@@ -111,7 +111,7 @@ class Indicator(UUIDModel):
                 case IndicatorFormatChoices.INTEGER:
                     self.value = str(int(float(result)))
                 case IndicatorFormatChoices.CURRENCY:
-                    self.value = format_decimal(result, format='#,##0.00',)
+                    self.value = format_decimal(result, format='#,##0.00', locale='pt_BR')
                 case _:
                     self.value = result
             self.save()
