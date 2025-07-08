@@ -27,6 +27,7 @@ class Category(CategoryBase):
     business = models.ForeignKey('business.Business', blank=True, null=True, on_delete=models.CASCADE)
     objects: CustomManager = CustomManager()
 
+
 class CategoryTemplate(CategoryBase):
     segment = models.ForeignKey('business.Segment', on_delete=models.CASCADE)
 
@@ -38,6 +39,7 @@ class Offer(UUIDChronoModel):
     price = models.DecimalField(max_digits=15, decimal_places=3)
     description = models.TextField(blank=True, null=True)
     display_on_catalog = models.BooleanField(default=False)
+    display_on_highlights = models.BooleanField(default=False)
 
     category = models.ForeignKey(Category, null=True, blank=True, on_delete=models.PROTECT)
     cover = models.ForeignKey(ImageUpload, on_delete=models.SET_NULL, null=True, blank=True, related_name='+')

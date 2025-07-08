@@ -10,6 +10,7 @@ from .models import Sale, SaleItem
 from rest_framework import filters
 from rest_framework.exceptions import ValidationError
 
+
 class SaleItemViewSet(ModelViewSet, BusinessViewMixin):
     serializer_class = SaleItemSlimSerializer
 
@@ -23,8 +24,10 @@ class SaleItemViewSet(ModelViewSet, BusinessViewMixin):
             queryset = queryset.filter(sale=sale)
         return queryset
 
+
 class SaleFilter(django_filters.FilterSet):
     status = django_filters.CharFilter(field_name='status', lookup_expr='exact')
+
 
 class SaleViewSet(ModelViewSet, BusinessViewMixin):
     model = Sale

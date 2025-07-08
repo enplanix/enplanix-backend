@@ -1,10 +1,11 @@
-from rest_framework.viewsets import ModelViewSet
+from django.shortcuts import get_object_or_404
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.business.models import Business, BusinessConfig, BusinessMember, Segment
-from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessPublicSerializer, SegmentSerializer
-from rest_framework import filters
-
+from apps.business.models import Business, BusinessConfig, BusinessMember, Indicator, IndicatorCalculator, Segment
+from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessDetailSerializer, BusinessPublicSerializer, IndicatorSerializer, SegmentSerializer
+from rest_framework import filters, permissions
+from rest_framework import mixins
 from core.utils import observe_queries
 from core.views import BusinessViewMixin
 
@@ -26,7 +27,7 @@ class BusinessViewSet(ModelViewSet, BusinessViewMixin):
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
             return BusinessEditSerializer
-        return BusinessPublicSerializer
+        return BusinessDetailSerializer
 
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
@@ -73,4 +74,25 @@ class BusinessConfigViewSet(ModelViewSet, BusinessViewMixin):
     def get_current(self, request):
         instance = self.filter_queryset(self.get_queryset()).first()
         serializer = BusinessConfigSerializer(instance)
+        return Response(serializer.data)
+
+
+class IndicatorViewSet(ModelViewSet):
+    serializer_class = IndicatorSerializer
+    queryset = Indicator.objects.all()
+
+    def get_queryset(self):
+        return IndicatorCalculator(self.request).run_calculations()
+
+
+class CatalogViewSet(GenericViewSet):
+    permission_classes = [permissions.AllowAny]
+    
+    @action(methods=['get'], detail=False)
+    def get_business_by_slug(self, request):
+        slug = request.query_params.get('slug', '')
+        if not slug:
+            return Response({"detail": "Slug not provided"}, status=404)
+        business = get_object_or_404(Business, slug=slug)
+        serializer = BusinessPublicSerializer(business)
         return Response(serializer.data)

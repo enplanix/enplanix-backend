@@ -11,7 +11,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from apps.access.models import AccessPreference
 from apps.access.serializers import AccessPreferenceSerializer, UserSerializer
-from apps.business.serializers import BusinessPublicSerializer
+from apps.business.serializers import BusinessDetailSerializer
 from rest_framework import exceptions
 
 
@@ -64,7 +64,7 @@ class MyAccessViewSet(GenericViewSet):
                 current_business = None
                 access_preference.current_business = None
                 access_preference.save()
-            serializer = BusinessPublicSerializer(current_business)
+            serializer = BusinessDetailSerializer(current_business)
             return Response(serializer.data)
         except (AccessPreference.DoesNotExist, exceptions.NotFound):
             return Response({"detail": "Business or access preference not found for this user."}, status=404)

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Business, BusinessConfig, BusinessMember, Segment
+from .models import Business, BusinessConfig, BusinessMember, Indicator, Segment
 
 
 
@@ -9,7 +9,7 @@ class SegmentAdmin(admin.ModelAdmin):
 
 @admin.register(Business)
 class BusinessAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['id', 'name', 'slug']
 
 
 @admin.register(BusinessConfig)
@@ -20,3 +20,8 @@ class BusinessConfigAdmin(admin.ModelAdmin):
 @admin.register(BusinessMember)
 class BusinessMemberAdmin(admin.ModelAdmin):
     list_display = ['id', 'user__email', 'business__name']
+
+
+@admin.register(Indicator)
+class IndicatorAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'formula', 'description', 'value']
