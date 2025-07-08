@@ -16,4 +16,3 @@ uvicorn backend.asgi:application \
   --loop uvloop \
   --http httptools \
   --timeout-keep-alive 5 \
-  --log-level critical
