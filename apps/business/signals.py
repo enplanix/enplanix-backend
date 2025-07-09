@@ -73,7 +73,7 @@ def set_additional_business_models(instance, created=False, **kwargs):
     if created:
         BusinessMember.objects.create(business=instance, user=request.user)
         BusinessConfig.objects.get_or_create(business=instance)
-    create_default_indicators(instance)
+        create_default_indicators(instance)
 
 
 @receiver(signals.post_delete, sender='business.Business')
