@@ -1,0 +1,25 @@
+{% extends "admin/base.html" %}
+{% block content_title %}
+    Comandos disponíveis
+{% endblock %}
+{% block object-tools %}
+  {{ block.super }}
+  <table class="table table-striped table-bordered" style="margin-top: 1em; width: 100%;">
+    <thead>
+      <tr>
+        <th>Comando</th>
+        <th>Ação</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Gerar segmentos padrões</td>
+        <td>
+            <form action="{% url 'admin:run-task' %}" method="post">
+                <button class="button" type="submit" name="command_id" value="command_generate_segments">Executar</button>
+            </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+{% endblock %}

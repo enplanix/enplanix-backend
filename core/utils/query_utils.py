@@ -20,11 +20,3 @@ def observe_queries(view_func):
 
         return response
     return _wrapped_view
-
-
-def is_float(value):
-    try:
-        float(value)
-        return True
-    except (TypeError, ValueError):
-        return False

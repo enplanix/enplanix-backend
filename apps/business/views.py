@@ -2,12 +2,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.business.models import Business, BusinessConfig, BusinessMember, Indicator, IndicatorCalculator, Segment
+from apps.business.models import Business, BusinessConfig, BusinessMember, Indicator, Segment
 from apps.business.serializers import BusinessConfigSerializer, BusinessEditSerializer, BusinessMembeAddSerializer, BusinessMemberPublicSerializer, BusinessDetailSerializer, BusinessPublicSerializer, IndicatorSerializer, SegmentSerializer
 from rest_framework import filters, permissions
-from rest_framework import mixins
-from core.utils import observe_queries
 from core.views import BusinessViewMixin
+
+from .services import IndicatorCalculator
 
 
 class CustomBusinessFilter(filters.SearchFilter):
@@ -82,7 +82,7 @@ class IndicatorViewSet(ModelViewSet):
     queryset = Indicator.objects.all()
 
     def get_queryset(self):
-        return IndicatorCalculator(self.request).run_calculations()
+        return IndicatorCalculator(self.request).run_calculations().order_by('-format', 'name')
 
 
 class CatalogViewSet(GenericViewSet):
