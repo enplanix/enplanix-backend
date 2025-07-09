@@ -74,5 +74,5 @@ DEFAULT_CATEGORIES = {
 
 def create_default_categories(business):
     segment = business.segment
-    for category in DEFAULT_CATEGORIES[segment.code]:
+    for category in DEFAULT_CATEGORIES.get(segment.code, []):
         Category.objects.create(**category, business=business)
