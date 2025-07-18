@@ -78,7 +78,14 @@ class SaleViewSet(ModelViewSet, BusinessViewMixin):
         instance.status = SaleStatusChoices.COMPLETED
         instance.save()
         return Response({"detail": "Venda concluída"})
-        
+
+    @action(methods=['PATCH'], detail=True)
+    def cancel_sale(self, request, pk=None):
+        instance = self.get_object()    
+        instance.status = SaleStatusChoices.CANCELED
+        instance.save()
+        return Response({"detail": "Venda cancelada"})
+    
     def perform_create(self, serializer):
         instance = serializer.save(business=self.get_request_business(), created_by=self.request.user)
         instance.update_total_price()
